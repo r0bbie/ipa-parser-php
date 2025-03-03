@@ -8,22 +8,23 @@ class IPAParser {
     private $ipaFilePath;
     private $infoPlistPath;
     private $xmlPlistPath;
+    private $extractDir;
 
     public function __construct($ipaFilePath) {
         $this->ipaFilePath = realpath($ipaFilePath);
+        $this->extractDir = dirname($this->ipaFilePath);
     }
 
     public function extractInfoPlist() {
         $zip = new ZipArchive();
-        $extractDir = dirname($this->ipaFilePath);
 
         if ($zip->open($this->ipaFilePath) === TRUE) {
             for ($i = 0; $i < $zip->numFiles; $i++) {
                 $entry = $zip->getNameIndex($i);
                 if (preg_match('!Payload/[^/]+\.app/Info\.plist!', $entry)) {
-                    $this->infoPlistPath = $extractDir . '/extracted_Info.plist';
-                    $zip->extractTo($extractDir, $entry);
-                    rename($extractDir . '/' . $entry, $this->infoPlistPath);
+                    $this->infoPlistPath = $this->extractDir . '/extracted_Info.plist';
+                    $zip->extractTo($this->extractDir, $entry);
+                    rename($this->extractDir . '/' . $entry, $this->infoPlistPath);
                     break;
                 }
             }
@@ -38,7 +39,7 @@ class IPAParser {
             return null;
         }
 
-        $this->xmlPlistPath = 'converted_Info.xml';
+        $this->xmlPlistPath = $this->extractDir . '/converted_Info.xml';
         exec("plutil -convert xml1 -o {$this->xmlPlistPath} {$this->infoPlistPath}");
         return $this->xmlPlistPath;
     }
