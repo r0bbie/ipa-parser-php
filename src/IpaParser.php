@@ -10,19 +10,20 @@ class IPAParser {
     private $xmlPlistPath;
 
     public function __construct($ipaFilePath) {
-        $this->ipaFilePath = $ipaFilePath;
+        $this->ipaFilePath = realpath($ipaFilePath);
     }
 
     public function extractInfoPlist() {
         $zip = new ZipArchive();
+        $extractDir = dirname($this->ipaFilePath);
 
         if ($zip->open($this->ipaFilePath) === TRUE) {
             for ($i = 0; $i < $zip->numFiles; $i++) {
                 $entry = $zip->getNameIndex($i);
                 if (preg_match('!Payload/[^/]+\.app/Info\.plist!', $entry)) {
-                    $this->infoPlistPath = 'extracted_Info.plist';
-                    $zip->extractTo('.', $entry);
-                    rename('./' . $entry, $this->infoPlistPath);
+                    $this->infoPlistPath = $extractDir . '/extracted_Info.plist';
+                    $zip->extractTo($extractDir, $entry);
+                    rename($extractDir . '/' . $entry, $this->infoPlistPath);
                     break;
                 }
             }
