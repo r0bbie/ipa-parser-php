@@ -21,7 +21,8 @@ class IPAParser {
                 $entry = $zip->getNameIndex($i);
                 if (preg_match('!Payload/[^/]+\.app/Info\.plist!', $entry)) {
                     $this->infoPlistPath = 'extracted_Info.plist';
-                    $zip->extractTo('.', $this->infoPlistPath, $entry);
+                    $zip->extractTo('.', $entry);
+                    rename('./' . $entry, $this->infoPlistPath);
                     break;
                 }
             }
