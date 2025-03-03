@@ -2,6 +2,8 @@
 
 namespace Bamalik1996\IpaParserPhp;
 
+use \ZipArchive;
+
 class IPAParser {
     private $ipaFilePath;
     private $infoPlistPath;
@@ -48,7 +50,8 @@ class IPAParser {
         $info = [];
 
         foreach ($xml->dict->key as $key) {
-            $value = next($key->xpath('following-sibling::*[1]'));
+            $array = $key->xpath('following-sibling::*[1]');
+            $value = next($array);
             $info[(string)$key] = (string)$value;
         }
 
@@ -56,7 +59,7 @@ class IPAParser {
     }
 }
 
-$parser = new IPAParser('path_to_your_ipa_file.ipa');
+/*$parser = new IPAParser('path_to_your_ipa_file.ipa');
 
 if ($parser->extractInfoPlist()) {
     $parser->convertPlistToXml();
@@ -69,3 +72,4 @@ if ($parser->extractInfoPlist()) {
 } else {
     echo "Failed to extract Info.plist.";
 }
+*/
