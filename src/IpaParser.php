@@ -49,11 +49,13 @@ class IPAParser {
 
         $xml = simplexml_load_file($this->xmlPlistPath);
         $info = [];
+        $keys = $xml->dict->key;
 
-        foreach ($xml->dict->key as $key) {
-            $array = $key->xpath('following-sibling::*[1]');
-            $value = next($array);
-            $info[(string)$key] = (string)$value;
+        for ($i = 0; $i < count($keys); $i++) {
+            $key = (string)$keys[$i];
+            $valueNode = $keys[$i]->xpath('following-sibling::*[1]')[0];
+            $value = (string)$valueNode;
+            $info[$key] = $value;
         }
 
         return $info;
