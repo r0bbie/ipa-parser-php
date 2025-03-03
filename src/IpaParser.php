@@ -54,6 +54,9 @@ class IPAParser {
 
         for ($i = 0; $i < count($keys); $i++) {
             $key = (string)$keys[$i];
+            if ($key === 'CFBundleURLTypes') {
+                continue;
+            }
             $valueNode = $keys[$i]->xpath('following-sibling::*[1]')[0];
 
             if ($valueNode->getName() == 'array') {
