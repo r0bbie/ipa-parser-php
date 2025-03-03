@@ -54,7 +54,16 @@ class IPAParser {
         for ($i = 0; $i < count($keys); $i++) {
             $key = (string)$keys[$i];
             $valueNode = $keys[$i]->xpath('following-sibling::*[1]')[0];
-            $value = (string)$valueNode;
+
+            if ($valueNode->getName() == 'array') {
+                $value = [];
+                foreach ($valueNode->children() as $child) {
+                    $value[] = (string)$child;
+                }
+            } else {
+                $value = (string)$valueNode;
+            }
+
             $info[$key] = $value;
         }
 
